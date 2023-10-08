@@ -1,12 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
+from datetime import datetime
+from play_sound import play_sound
+
 
 class TimerWindow(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Таймеры")
         self.attributes('-toolwindow', 1)  # Убирает кнопки развернуть и свернуть
-        self.geometry("300x400")
+        self.geometry("135x600")
+        self.resizable(False, False)
 
         self.timer1 = TimerFrame(self, "Арена")
         self.timer1.pack(side=tk.TOP, pady=10)
@@ -24,12 +28,16 @@ class TimerFrame(tk.Frame):
         self.timer_name = timer_name
         self.time = tk.StringVar()
         self.time.set("00:00:00")
+        self.start_time = None
 
         self.label = ttk.Label(self, text=self.timer_name, font=("Arial", 10))
         self.label.pack(pady=1)
 
         self.timer_label = ttk.Label(self, textvariable=self.time, font=("Arial", 14))
         self.timer_label.pack(pady=1)
+
+        self.launch_label = ttk.Label(self, text="", font=("Arial", 10))
+        self.launch_label.pack(pady=1)
 
         self.input_minutes = tk.Entry(self)
         self.input_minutes.pack(side=tk.TOP, padx=1, pady=1)
@@ -62,6 +70,9 @@ class TimerFrame(tk.Frame):
         if self.current_timer is None:  # If timer is not running
             self.current_timer = self.after(1000, self.update_timer)
             self.button_start_stop.configure(text="Стоп")
+            if self.start_time is None:  # Check if start time is already saved
+                self.start_time = datetime.now().strftime("%H:%M")  # Save start time
+                self.launch_label.configure(text=f"Запуск в {self.start_time}")  # Update launch label
         else:  # If timer is running
             self.after_cancel(self.current_timer)
             self.current_timer = None
@@ -74,6 +85,7 @@ class TimerFrame(tk.Frame):
         if total_time == 0:
             self.current_timer = None
             self.button_start_stop.configure(text="Старт")
+            play_sound()  # Проигрывание звука после окончания таймера
         else:
             total_time -= 1
             new_hh = total_time // 3600
@@ -90,3 +102,5 @@ class TimerFrame(tk.Frame):
             self.after_cancel(self.current_timer)
             self.current_timer = None
             self.button_start_stop.configure(text="Старт")
+        self.launch_label.configure(text="")  # Очистка поля времени запуска
+

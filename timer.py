@@ -10,16 +10,16 @@ class TimerWindow(tk.Tk):
         self.title("Таймеры")
         self.attributes('-toolwindow', 1)  # Убирает кнопки развернуть и свернуть
         self.geometry("135x600")
-        self.resizable(False, False)
+        self.resizable(True, True)
 
         self.timer1 = TimerFrame(self, "Арена")
-        self.timer1.pack(side=tk.TOP, pady=10)
+        self.timer1.pack(side=tk.LEFT, pady=10)
 
         self.timer2 = TimerFrame(self, "ЛевыйVR")
-        self.timer2.pack(side=tk.TOP, pady=10)
+        self.timer2.pack(side=tk.LEFT, pady=10)
 
         self.timer3 = TimerFrame(self, "ПравыйVR")
-        self.timer3.pack(side=tk.TOP, pady=10)
+        self.timer3.pack(side=tk.LEFT, pady=10)
 
 
 class TimerFrame(tk.Frame):
@@ -67,13 +67,13 @@ class TimerFrame(tk.Frame):
         self.time.set("{:02d}:{:02d}:{:02d}".format(new_hh, new_mm, new_ss))
 
     def start_stop_timer(self):
-        if self.current_timer is None:  # If timer is not running
+        if self.current_timer is None:  # Если таймер не запущен
             self.current_timer = self.after(1000, self.update_timer)
             self.button_start_stop.configure(text="Стоп")
-            if self.start_time is None:  # Check if start time is already saved
-                self.start_time = datetime.now().strftime("%H:%M")  # Save start time
-                self.launch_label.configure(text=f"Запуск в {self.start_time}")  # Update launch label
-        else:  # If timer is running
+            if self.start_time is None:  # Проверка на то что таймер уже работал
+                self.start_time = datetime.now().strftime("%H:%M")  # Сохранение времени старта
+                self.launch_label.configure(text=f"Запуск в {self.start_time}")
+        else:  # Если таймер уже запущен
             self.after_cancel(self.current_timer)
             self.current_timer = None
             self.button_start_stop.configure(text="Старт")

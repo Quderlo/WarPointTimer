@@ -7,3 +7,5 @@ README.md
 /README.md/
 README.md/
 *.pyc
+build/
+dist/
